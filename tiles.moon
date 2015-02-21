@@ -1,9 +1,6 @@
 
 {graphics: g} = love
 
-
-class TileSheet
-
 class TileGenerator extends Box
   w: 16
   h: 16
@@ -86,5 +83,28 @@ class WoodGenerator extends TileGenerator
         y = @rng\random 0, 15
         Box(0,y,16,2)\draw color
 
+class TileSheet
+  w: 4
+  h: 16
+
+  new: =>
+    {:w, :h} = TileGenerator
+
+    @canvas = g.newCanvas w * @w, h * @h
+    @canvas\setFilter "nearest", "nearest"
+
+    rows = {
+      [GrassGenerator i for i=2,5]
+      [DirtGenerator i for i=2,5]
+      [WoodGenerator i for i=2,5]
+    }
+
+    g.setCanvas @canvas
+    for y, row in ipairs rows
+      for x, gen in ipairs row
+        g.draw gen.canvas, (x - 1) * w, (y - 1) * h
+
+    g.setCanvas!
+
 { :TileGenerator, :GrassGenerator, :DirtGenerator,
-  :WoodGenerator }
+  :WoodGenerator, :TileSheet }
