@@ -22,6 +22,12 @@ export C = {
   wood: {148, 146, 76}
   wood_light: {220, 198, 124}
   wood_dark: {73, 84, 65}
+
+  floor: {73, 84, 65}
+  floor_light: {144, 144, 152}
+
+  top: {95, 57, 31}
+  top_light: {150,70,30}
 }
 
 import Game from require "game"

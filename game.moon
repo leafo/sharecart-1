@@ -18,7 +18,7 @@ class Game
     @viewport = EffectViewport scale: GAME_CONFIG.scale
     @entities = EntityList!
 
-    @player = Player 100, 100
+    @player = Player 0,0
     @entities\add @player
     @entities\add Object 130, 130, 20, 16
 
@@ -27,7 +27,7 @@ class Game
     @sheet = TileSheet!
 
     map_rng = love.math.newRandomGenerator 666
-    @map = TileMap\from_tiled "maps.map", {
+    @map = TileMap\from_tiled "maps.home", {
       object: (o) ->
         switch o.name
           when "start"
@@ -37,7 +37,7 @@ class Game
       tile: (t) ->
         p = math.abs map_rng\randomNormal!
         offset = math.floor math.min 3, p
-        t.tid = offset * 4
+        t.tid = t.tid * TileSheet.w + offset
         t
 
     }
@@ -55,26 +55,27 @@ class Game
     @screen_canvas\clear 10, 10, 10
 
     @viewport\apply!
-    @map\draw!
-
     @viewport\center_on @player
 
-    g.print "hello world", 10, 10
+    @map\draw @viewport, 1, 1
+
+    -- g.print "hello world", 10, 10
 
     @entities\draw!
 
-    g.push!
-    g.translate 20, 20
-    g.draw @sheet.canvas, -80, -80
-    g.pop!
+    -- g.push!
+    -- g.translate 20, 20
+    -- g.draw @sheet.canvas, -80, -80
+    -- g.pop!
 
-    -- COLOR\push 0,0,0, (math.sin(love.timer.getTime! * 2) + 1) / 2 * 255
-    -- g.rectangle "fill", 0, 0, @viewport.w, @viewport.h
-    -- COLOR\pop!
-
-    g.draw imgfy("images/hi.png").tex
+    @map\draw @viewport, 2, 2
 
     @viewport\pop!
+
+    -- COLOR\push 0,0,0, (math.sin(love.timer.getTime! * 2) + 1) / 2 * 255
+    -- g.rectangle "fill", 0, 0, g.getWidth!, g.getHeight!
+    -- COLOR\pop!
+
     g.setCanvas!
 
     @lut\render ->
@@ -83,6 +84,7 @@ class Game
   update: (dt) =>
     @entities\update dt, @
     @map\update dt
+    @viewport\update dt
 
     @entity_grid\clear!
     for e in *@entities
@@ -92,6 +94,9 @@ class Game
 
   collides: (thing) =>
     for other in *@entity_grid\get_touching thing
+      return true
+
+    if @map\collides thing
       return true
 
     false
