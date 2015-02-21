@@ -27,7 +27,7 @@ class Game
     @sheet = TileSheet!
 
     map_rng = love.math.newRandomGenerator 666
-    @map = TileMap\from_tiled "maps.home", {
+    @map = TileMap\from_tiled "maps.map", {
       object: (o) ->
         switch o.name
           when "start"
