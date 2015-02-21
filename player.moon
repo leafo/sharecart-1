@@ -24,8 +24,9 @@ class Player extends Entity
       offset = Vec2d(@feet_pos!) + @primary_direction * 10
       @grab_box\move_center unpack offset
 
-    if CONTROLLER\tapped "confirm"
-      @try_pickup!
+    if CONTROLLER\downed "confirm"
+      unless @try_pickup!
+        @try_drop!
 
     true
 
@@ -40,11 +41,32 @@ class Player extends Entity
     for obj in *@world.entity_grid\get_touching @grab_box
       if obj.pickup
         obj\pickup @
-        break
+        return true
+
+    false
 
   try_drop: =>
     return unless @holding
-    print "drop it"
+    return unless @primary_direction
+    return unless @grab_box
+
+    ox, oy = @holding\center!
+    cx, cy = @grab_box\center!
+
+    @holding\move_center math.floor(cx), math.floor(cy)
+    print "Trying drop"
+    for i=1,20
+      touches = @world\collides @holding
+
+      unless touches
+        @holding.held_by = nil
+        @holding = nil
+        return true
+
+      @holding\move unpack @primary_direction
+
+    @holding\move_center ox, oy
+    return false
 
   draw: =>
     sprite = Box(0, 0, 24, 32)

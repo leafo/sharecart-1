@@ -16,7 +16,7 @@ class Object extends Entity
     @held_by = obj
     obj.holding = @
 
-  __tostring: => "<Object>"
+  __tostring: => "<Object #{Box.__tostring @}>"
 
 { :Object }
 
