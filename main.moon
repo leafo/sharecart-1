@@ -2,6 +2,8 @@
 require "lovekit.all"
 {graphics: g} = love
 
+sharecart = require "sharecart"
+
 export DEBUG = false
 
 import Game from require "game"
@@ -15,6 +17,12 @@ love.load = ->
     default: load_font "images/font.png",
       [[ abcdefghijklmnopqrstuvwxyz-1234567890!.,:;'"?$&]]
   }
+
+  export SHARECART = assert sharecart.love_load(love, args),
+    "could not find valid save"
+
+
+  SHARECART.PlayerName = "leafo buttthrob"
 
   g.setFont fonts.default
   g.setBackgroundColor 10, 10, 10
