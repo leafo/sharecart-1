@@ -11,6 +11,7 @@ import
   from require "tiles"
 
 import HList, VList from require "lovekit.ui"
+import LutShader from require "shaders"
 
 class Game
   new: =>
@@ -41,11 +42,18 @@ class Game
 
     }
 
-    print!
-
     @map.sprite = @sheet\spriter!
 
+    @screen_canvas = g.newCanvas!
+    @screen_canvas\setFilter "nearest", "nearest"
+
+    lut = imgfy "images/lut-restricted.png"
+    @lut = LutShader lut.tex
+
   draw: =>
+    g.setCanvas @screen_canvas
+    @screen_canvas\clear 10, 10, 10
+
     @viewport\apply!
     @map\draw!
 
@@ -60,7 +68,17 @@ class Game
     g.draw @sheet.canvas, -80, -80
     g.pop!
 
+    -- COLOR\push 0,0,0, (math.sin(love.timer.getTime! * 2) + 1) / 2 * 255
+    -- g.rectangle "fill", 0, 0, @viewport.w, @viewport.h
+    -- COLOR\pop!
+
+    g.draw imgfy("images/hi.png").tex
+
     @viewport\pop!
+    g.setCanvas!
+
+    @lut\render ->
+      g.draw @screen_canvas
 
   update: (dt) =>
     @entities\update dt, @
