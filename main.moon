@@ -1,10 +1,20 @@
 
+require "lovekit.reloader"
 require "lovekit.all"
+
 {graphics: g} = love
 
 sharecart = require "sharecart"
 
 export DEBUG = false
+
+export C = {
+  skin: {220, 198, 124}
+  shadow: {144, 144, 152}
+  stone: {164, 218, 196}
+  grass: {60, 136, 68}
+  dirt: {148,74,28}
+}
 
 import Game from require "game"
 

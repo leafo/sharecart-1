@@ -25,19 +25,20 @@ class Player extends Entity
   draw: =>
     sprite = Box(0, 0, 24, 32)
     sprite\set_pos @x, @y - 32 + @h
-    sprite\draw {144, 144, 152}
+    sprite\draw C.skin
 
-    super {255,255,255, 50}
+    super { 255,255,255, 50 }
 
     fx, fy = @feet_pos!
     box = Box(0, 0, 3, 3)\move_center fx, fy
-    box\draw {100, 255, 100, 200}
+    box\draw C.grass
 
     if @primary_direction
       offset = Vec2d(fx, fy) + @primary_direction * 10
       grab_zone = Box(0,0, 25, 20)\move_center unpack offset
-      grab_zone\draw {255, 100, 100, 100}
-
+      COLOR\pusha 100
+      grab_zone\draw C.dirt
+      COLOR\pop!
 
 { :Player }
 
