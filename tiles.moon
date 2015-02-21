@@ -106,5 +106,10 @@ class TileSheet
 
     g.setCanvas!
 
+
+  spriter: =>
+    Spriter Image\from_tex(@canvas),
+      TileGenerator.w, TileGenerator.h
+
 { :TileGenerator, :GrassGenerator, :DirtGenerator,
   :WoodGenerator, :TileSheet }

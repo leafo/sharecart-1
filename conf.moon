@@ -1,6 +1,6 @@
 
 export GAME_CONFIG = {
-  scale: 2
+  scale: 3
   keys: {
     confirm: { "x", " ", joystick: 1}
     cancel: { "c", joystick: 2 }
@@ -16,8 +16,8 @@ export GAME_CONFIG = {
 }
 
 love.conf = (t) ->
-  t.window.width = 420 * GAME_CONFIG.scale
-  t.window.height = 272 * GAME_CONFIG.scale
+  t.window.width = 210 * GAME_CONFIG.scale
+  t.window.height = 136 * GAME_CONFIG.scale
 
   t.title = "teafart"
   t.author = "leafo"

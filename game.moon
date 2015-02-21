@@ -16,30 +16,55 @@ class Game
   new: =>
     @viewport = EffectViewport scale: GAME_CONFIG.scale
     @entities = EntityList!
-    @entities\add Player 100, 100
+
+    @player = Player 100, 100
+    @entities\add @player
     @entities\add Object 130, 130, 20, 16
 
     @entity_grid = UniformGrid!
 
     @sheet = TileSheet!
 
+    map_rng = love.math.newRandomGenerator 666
+    @map = TileMap\from_tiled "maps.map", {
+      object: (o) ->
+        switch o.name
+          when "start"
+            @player.x = o.x
+            @player.y = o.y
+
+      tile: (t) ->
+        p = math.abs map_rng\randomNormal!
+        offset = math.floor math.min 3, p
+        t.tid = offset * 4
+        t
+
+    }
+
+    print!
+
+    @map.sprite = @sheet\spriter!
+
   draw: =>
     @viewport\apply!
+    @map\draw!
+
+    @viewport\center_on @player
+
     g.print "hello world", 10, 10
 
     @entities\draw!
 
     g.push!
     g.translate 20, 20
-    g.scale 4, 4
-    g.draw @sheet.canvas, 0, 0
+    g.draw @sheet.canvas, -80, -80
     g.pop!
 
     @viewport\pop!
 
-
   update: (dt) =>
     @entities\update dt, @
+    @map\update dt
 
     @entity_grid\clear!
     for e in *@entities
