@@ -185,6 +185,10 @@ class TileSheet
 
     g.setCanvas!
 
+
+  row_tid: (row) =>
+    row * @w
+
   spriter: =>
     Spriter Image\from_tex(@canvas),
       TileGenerator.w, TileGenerator.h

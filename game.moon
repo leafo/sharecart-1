@@ -146,17 +146,20 @@ class OutsideWorld extends World
 
   draw_inside_below: =>
     for t, v in pairs @ground_tiles
-      c = if v.wet and not v.tilled
-        C.water
-      elseif v.tilled and not v.wet
-        C.dirt_darker
-      elseif v.tilled and v.wet
-        C.stone
+      offset = t.tid % 7
 
-      if c
-        COLOR\push c
-        g.rectangle "fill", t\unpack!
-        COLOR\pop!
+      sheet_tid = if v.wet and not v.tilled
+        -- wet
+        @sheet\row_tid 5
+      elseif v.tilled and not v.wet
+        -- tilled
+        @sheet\row_tid 6
+      elseif v.tilled and v.wet
+        -- both
+        @sheet\row_tid 7
+
+      if sheet_tid
+        @map.sprite\draw sheet_tid + offset, t.x, t.y
 
   draw_inside: =>
     super!
