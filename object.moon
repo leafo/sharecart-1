@@ -1,6 +1,8 @@
 
 {graphics: g} = love
 
+import WaterEmitter from require "particles"
+
 class Object extends Entity
   color: C.stone
   solid: true
@@ -35,6 +37,8 @@ class Object extends Entity
 class WateringCan extends Object
   use: (player, world) =>
     print "using watering can"
+    tile = player\find_tiles!
+    world.particles\add WaterEmitter tile, world
 
 class Hoe extends Object
   use: (player, world) =>

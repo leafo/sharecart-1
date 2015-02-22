@@ -24,17 +24,22 @@ class Transport extends Box
   update: (dt) =>
     true
 
+class GameMap extends TileMap
+  default_layer: =>
+    @layers[1]
+
 class World
   new: (@game, @map_name) =>
     @viewport = EffectViewport scale: GAME_CONFIG.scale
     @entities = DrawList!
+    @particles = DrawList!
 
     @entity_grid = UniformGrid!
     @sheet = TileSheet!
     @spawns = {}
 
     map_rng = love.math.newRandomGenerator 666
-    @map = TileMap\from_tiled @map_name, {
+    @map = GameMap\from_tiled @map_name, {
       object: (o) ->
         obox = Box o.x, o.y, o.width, o.height
 
@@ -74,12 +79,14 @@ class World
 
     @map\draw @viewport, 1, 1
     @entities\draw_sorted!
+    @particles\draw!
     @map\draw @viewport, 2, 2
 
     @viewport\pop!
 
   update: (dt) =>
     @entities\update dt, @
+    @particles\update dt, @
     @map\update dt
 
     if @player

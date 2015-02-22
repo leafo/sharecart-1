@@ -28,8 +28,10 @@ export C = {
 
   top: {95, 57, 31}
   top_light: {150,70,30}
-}
 
+  water_light: {108, 250, 220}
+  water: {4, 147, 204}
+}
 
 import Game from require "game"
 import LutShader from require "shaders"

@@ -115,6 +115,17 @@ class Player extends Entity
     if @holding
       @holding\draw!
 
+  find_tiles: =>
+    return unless @world
+    fx, fy = @feet_pos!
+    cell_size = @world.map.cell_size
+
+    tx = math.floor(fx / cell_size)
+    ty = math.floor(fx / cell_size)
+
+    ti = @world.map\to_i tx, ty
+    @world.map\default_layer![ti]
+
   __tostring: => "<Player>"
 
 { :Player }
