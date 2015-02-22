@@ -49,13 +49,40 @@ class Hud
 
     "#{month} #{day}#{ordinal day}"
 
-  format_time: =>
+
+  hours_minutes: =>
     t = math.floor @time
     minutes = t % 60
     hours = math.floor t / 60
+    hours, minutes
+
+  format_time: =>
+    hours, minutes = @hours_minutes!
     minutes = 15 * math.floor minutes / 15
 
     "#{"%.2d"\format hours}:#{"%.2d"\format minutes}"
+
+  night_progress: =>
+    total_minutes = 60 * 24
+    minutes = @time % total_minutes
+    start = 20 * 60 -- 20th hour
+    len = 9 * 60 -- 9 hours
+
+    minutes -= start
+    if minutes < 0
+      minutes += total_minutes
+
+    return 0 if minutes > len
+    minutes / len
+
+  night_darkness: =>
+    p = @night_progress!
+    if p < 0.1
+      lerp 0, 1, p/0.1
+    elseif p > 0.9
+      lerp 1, 0, (p - 0.9) / 0.1
+    else
+      1
 
   update: (dt) =>
     @time += dt * @time_speed
@@ -67,7 +94,7 @@ class Hud
 
   draw: =>
     @viewport\apply!
-    
+
     COLOR\push 0,0,0, 150
     Box.draw @date
     Box.draw @clock

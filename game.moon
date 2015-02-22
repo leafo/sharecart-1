@@ -133,18 +133,22 @@ class OutsideWorld extends World
     super!
 
     if @player
-      cx, cy = @player\center!
+      p = @game.hud\night_darkness!
+      if p > 0
+        cx, cy = @player\center!
 
-      nx = cx - @night\width! / 2
-      ny = cy - @night\height! / 2
+        nx = cx - @night\width! / 2
+        ny = cy - @night\height! / 2
 
-      nx = math.min @viewport.x, nx
-      ny = math.min @viewport.y, ny
+        nx = math.min @viewport.x, nx
+        ny = math.min @viewport.y, ny
 
-      nx = math.max nx, @viewport.w - @night\width!
-      ny = math.max ny, @viewport.h - @night\height!
+        nx = math.max nx, @viewport.w - @night\width!
+        ny = math.max ny, @viewport.h - @night\height!
 
-      @night\draw nx, ny
+        COLOR\pusha p * 255
+        @night\draw nx, ny
+        COLOR\pop!
 
 class Game
   new: =>
