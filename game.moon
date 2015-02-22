@@ -13,6 +13,9 @@ import Hud from require "hud"
 
 objects = require "object"
 
+class Dirt extends Tile
+  dirt: true
+
 class Transport extends Box
   solid: false
   is_transport: true
@@ -59,6 +62,7 @@ class World
       tile: (t) ->
         p = math.abs map_rng\randomNormal!
         offset = math.floor math.min 3, p
+        t.type = Dirt if t.tid == 1
         t.tid = t.tid * TileSheet.w + offset
         t
 
@@ -129,8 +133,21 @@ class OutsideWorld extends World
     super ...
     @night = imgfy "images/night.png"
 
+    @ground_grid = UniformGrid 32
+    for _, t in pairs @map\default_layer!
+      if t.dirt
+        @ground_grid\add t
+
   draw_inside: =>
     super!
+
+    @active_tile = nil
+    if box = @player and @player.grab_box
+      if tiles = @ground_grid\get_touching_pt box\center!
+        @active_tile = unpack tiles
+
+    if @active_tile
+      g.rectangle "line", @active_tile\unpack!
 
     if @player
       p = @game.hud\night_darkness!

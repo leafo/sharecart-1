@@ -1,3 +1,4 @@
+{graphics: g} = love
 
 -- Properties
 -- holding: object being held
@@ -11,12 +12,8 @@ class Player extends Entity
 
   lazy sprite: => Spriter "images/player.png", 24, 32
 
-
   w: 18
   h: 10
-
-  feet_offset_x: 8
-  feet_offset_y: 6
 
   ox: -3
   oy: -23
@@ -79,7 +76,12 @@ class Player extends Entity
 
     if @primary_direction
       @grab_box or= Box 0,0, 25, 20
-      offset = Vec2d(@feet_pos!) + @primary_direction * 10
+      dist = if @primary_direction[1] == 0
+        10
+      else
+        15
+
+      offset = Vec2d(@feet_pos!) + @primary_direction * dist
       @grab_box\move_center unpack offset
 
     if CONTROLLER\downed "pickup"
@@ -93,11 +95,10 @@ class Player extends Entity
     true
 
   feet_pos: =>
-    @x + @feet_offset_x, @y + @feet_offset_y
+    @center!
 
   move_feet: (x,y) =>
-    @x = x - @feet_offset_x
-    @y = y - @feet_offset_y
+    @move_center x,y
 
   head_pos: =>
     @x + @w / 2, @y - 10
@@ -136,11 +137,13 @@ class Player extends Entity
 
   draw: =>
     @anim\draw @x + @ox, @y + @oy
+      
+    -- if DEBUG
+    --   if @grab_box
+    --     g.rectangle "line", @grab_box\unpack!
 
-    -- if @grab_box
-    --   COLOR\pusha 100
-    --   @grab_box\draw C.dirt
-    --   COLOR\pop!
+    --   g.setPointSize 5,5
+    --   g.point @feet_pos!
 
     if @holding
       @holding\draw!
