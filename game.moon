@@ -27,20 +27,17 @@ class Transport extends Box
     true
 
 class World
-  new: (map_name) =>
+  new: (@game, map_name) =>
     @viewport = EffectViewport scale: GAME_CONFIG.scale
     @entities = DrawList!
 
-    @entities\add Object 130, 130, 20, 16
-
+    -- @entities\add Object 130, 130, 20, 16
     @entity_grid = UniformGrid!
-
     @sheet = TileSheet!
-
     @spawns = {}
 
     map_rng = love.math.newRandomGenerator 666
-    @map = TileMap\from_tiled "maps.map", {
+    @map = TileMap\from_tiled map_name, {
       object: (o) ->
         switch o.name
           when "start"
@@ -49,8 +46,8 @@ class World
               o.y
             }
           when "transport"
-            map = assert o.properties.map, "transport has no map"
-            @entities\add Transport map, o.x, o.y, o.width, o.height
+            world_name = assert o.properties.world, "transport has no world"
+            @entities\add Transport world_name, o.x, o.y, o.width, o.height
 
       tile: (t) ->
         p = math.abs map_rng\randomNormal!
@@ -105,7 +102,7 @@ class World
     @map\update dt
 
     if @player
-      @viewport\center_on @player, nil, dt
+      @viewport\center_on @player, @map\to_box!, dt
 
     @viewport\update dt
 
@@ -119,7 +116,7 @@ class World
     if @player
       for other in *@entity_grid\get_touching @player
         if other.is_transport
-          print "transport", other.target
+          @game\goto_world other.target
 
   collides: (thing) =>
     for other in *@entity_grid\get_touching thing
@@ -134,8 +131,8 @@ class World
 class Game
   new: =>
     @worlds_by_name = {
-      farm: World "maps.map"
-      home: World "maps.home"
+      farm: World @, "maps.map"
+      home: World @, "maps.home"
     }
 
     @player = Player 0,0
@@ -148,7 +145,7 @@ class Game
       @current_world\remove_player @player
 
     world\add_player @player
-    DISPATCHER\push world
+    DISPATCHER\replace world
 
   update: (dt) =>
     @goto_world "farm"

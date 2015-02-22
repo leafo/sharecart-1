@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="18" height="12" tilewidth="16" tileheight="16" nextobjectid="2">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="18" height="12" tilewidth="16" tileheight="16" nextobjectid="4">
  <tileset firstgid="1" name="tile" tilewidth="16" tileheight="16">
   <image source="../images/tile.png" width="256" height="256"/>
  </tileset>
@@ -24,5 +24,10 @@
  </layer>
  <objectgroup name="Object Layer 1">
   <object id="1" name="start" x="112" y="87"/>
+  <object id="2" name="transport" x="127.97" y="178.485" width="32.1796" height="11.9738">
+   <properties>
+    <property name="world" value="farm"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

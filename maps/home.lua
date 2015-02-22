@@ -7,7 +7,7 @@ return {
   height = 12,
   tilewidth = 16,
   tileheight = 16,
-  nextobjectid = 2,
+  nextobjectid = 4,
   properties = {},
   tilesets = {
     {
@@ -130,6 +130,21 @@ return {
           rotation = 0,
           visible = true,
           properties = {}
+        },
+        {
+          id = 2,
+          name = "transport",
+          type = "",
+          shape = "rectangle",
+          x = 127.97,
+          y = 178.485,
+          width = 32.1796,
+          height = 11.9738,
+          rotation = 0,
+          visible = true,
+          properties = {
+            ["world"] = "farm"
+          }
         }
       }
     }
