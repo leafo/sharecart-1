@@ -39,6 +39,7 @@ class World
     @entity_grid = UniformGrid!
     @sheet = TileSheet!
     @spawns = {}
+    @night = imgfy "images/night.png"
 
     map_rng = love.math.newRandomGenerator 666
     @map = GameMap\from_tiled @map_name, {
@@ -83,6 +84,19 @@ class World
     @entities\draw_sorted!
     @particles\draw!
     @map\draw @viewport, 2, 2
+
+    cx, cy = @player\center!
+
+    nx = cx - @night\width! / 2
+    ny = cy - @night\height! / 2
+
+    nx = math.min @viewport.x, nx
+    ny = math.min @viewport.y, ny
+
+    nx = math.max nx, @viewport.w - @night\width!
+    ny = math.max ny, @viewport.h - @night\height!
+
+    @night\draw nx, ny
 
     @viewport\pop!
 
