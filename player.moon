@@ -1,5 +1,8 @@
 
+-- Properties
 -- holding: object being held
+-- primary_direction: vector of last faced direction
+-- grab_box: the hitbox for the grab/activate zone
 class Player extends Entity
   color: {255, 255, 255}
   is_player: true
@@ -33,6 +36,9 @@ class Player extends Entity
 
     @fit_move dx, dy, @world
 
+    if @holding
+      @holding\update dt
+
     if @primary_direction
       @grab_box or= Box 0,0, 25, 20
       offset = Vec2d(@feet_pos!) + @primary_direction * 10
@@ -41,6 +47,10 @@ class Player extends Entity
     if CONTROLLER\downed "pickup"
       unless @try_pickup!
         @try_drop!
+
+    if CONTROLLER\downed "use"
+      if @holding
+        @holding\use @, @world
 
     true
 
@@ -55,10 +65,11 @@ class Player extends Entity
     @x + @w / 2, @y - 10
 
   try_pickup: =>
+    return if @holding
     return unless @grab_box
     for obj in *@world.entity_grid\get_touching @grab_box
       if obj.pickup
-        obj\pickup @
+        obj\pickup @, @world
         return true
 
     false
@@ -77,8 +88,7 @@ class Player extends Entity
       touches = @world\collides @holding
 
       unless touches
-        @holding.held_by = nil
-        @holding = nil
+        @holding\drop @, @world
         return true
 
       @holding\move unpack @primary_direction
@@ -101,6 +111,9 @@ class Player extends Entity
       COLOR\pusha 100
       @grab_box\draw C.dirt
       COLOR\pop!
+
+    if @holding
+      @holding\draw!
 
   __tostring: => "<Player>"
 

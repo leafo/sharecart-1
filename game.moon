@@ -73,7 +73,7 @@ class World
     @viewport\apply!
 
     @map\draw @viewport, 1, 1
-    @entities\draw!
+    @entities\draw_sorted!
     @map\draw @viewport, 2, 2
 
     @viewport\pop!
@@ -108,6 +108,9 @@ class World
       return true
 
     false
+
+  remove: (...) => @entities\remove ...
+  add: (...) => @entities\add ...
 
 class Game
   new: =>

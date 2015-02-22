@@ -14,9 +14,17 @@ class Object extends Entity
     super ...
     true
 
-  pickup: (obj) =>
-    @held_by = obj
-    obj.holding = @
+  pickup: (thing, world) =>
+    world\remove @
+
+    @held_by = thing
+    thing.holding = @
+
+
+  drop: (thing, world) =>
+    @held_by = nil
+    thing.holding = nil
+    world\add @
 
   __tostring: => "<Object #{Box.__tostring @}>"
 
@@ -25,11 +33,11 @@ class Object extends Entity
     g.print @@__name\lower!, @x, @y
 
 class WateringCan extends Object
-  use: (world) =>
+  use: (player, world) =>
     print "using watering can"
 
 class Hoe extends Object
-  use: (world) =>
+  use: (player, world) =>
     print "using watering hoe"
 
 { :Object, :WateringCan, :Hoe }
