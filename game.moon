@@ -10,9 +10,6 @@ import
   TileSheet
   from require "tiles"
 
-import HList, VList from require "lovekit.ui"
-import LutShader from require "shaders"
-
 class Transport extends Box
   solid: false
   is_transport: true
@@ -59,12 +56,6 @@ class World
 
     @map.sprite = @sheet\spriter!
 
-    @screen_canvas = g.newCanvas!
-    @screen_canvas\setFilter "nearest", "nearest"
-
-    lut = imgfy "images/lut-restricted.png"
-    @lut = LutShader lut.tex
-
   add_player: (player, source="default") =>
     sx, sy = unpack @spawns[source]
     assert sx, "missing spawn"
@@ -77,9 +68,6 @@ class World
     @entities\remove @player
 
   draw: =>
-    g.setCanvas @screen_canvas
-    @screen_canvas\clear 10, 10, 10
-
     @viewport\apply!
 
     @map\draw @viewport, 1, 1
@@ -87,15 +75,6 @@ class World
     @map\draw @viewport, 2, 2
 
     @viewport\pop!
-
-    -- COLOR\push 0,0,0, (math.sin(love.timer.getTime! * 2) + 1) / 2 * 255
-    -- g.rectangle "fill", 0, 0, g.getWidth!, g.getHeight!
-    -- COLOR\pop!
-
-    g.setCanvas!
-
-    @lut\render ->
-      g.draw @screen_canvas
 
   update: (dt) =>
     @entities\update dt, @

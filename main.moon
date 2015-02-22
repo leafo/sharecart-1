@@ -6,6 +6,7 @@ require "lovekit.all"
 
 sharecart = require "sharecart"
 
+
 export DEBUG = false
 
 export C = {
@@ -30,7 +31,33 @@ export C = {
   top_light: {150,70,30}
 }
 
+
 import Game from require "game"
+import LutShader from require "shaders"
+
+class State extends Dispatcher
+  default_transition: FadeTransition
+
+  new: (...) =>
+    super ...
+
+    @screen_canvas = g.newCanvas!
+    @screen_canvas\setFilter "nearest", "nearest"
+
+    lut = imgfy "images/lut-restricted.png"
+    @lut = LutShader lut.tex
+
+  draw: =>
+    g.setCanvas @screen_canvas
+    @screen_canvas\clear 10, 10, 10
+
+    super!
+
+    g.setCanvas!
+
+    @lut\render ->
+      g.draw @screen_canvas
+
 
 load_font = (img, chars) ->
   font_image = imgfy img
@@ -45,12 +72,12 @@ love.load = ->
   export SHARECART = assert sharecart.love_load(love, args),
     "could not find valid save"
 
-  SHARECART.PlayerName = "leafo buttthrob"
+  -- SHARECART.PlayerName = "leafo buttthrob"
 
   g.setFont fonts.default
   g.setBackgroundColor 10, 10, 10
 
   export CONTROLLER = Controller GAME_CONFIG.keys, "auto"
-  export DISPATCHER = Dispatcher Game!
+  export DISPATCHER = State Game!
   DISPATCHER.default_transition = FadeTransition
   DISPATCHER\bind love
