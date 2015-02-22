@@ -44,11 +44,15 @@ class GrassGenerator extends TileGenerator
 
 
 class DirtGenerator extends TileGenerator
+  colors: =>
+    C.dirt, C.dirt_dark
+
   render_tile: =>
     @rng = love.math.newRandomGenerator @seed
-    Box.draw @, C.dirt
+    light, dark = @colors!
+    Box.draw @, light
 
-    COLOR\push C.dirt_dark
+    COLOR\push dark
 
     g.setPointSize 1
     for i=1,3
@@ -71,6 +75,37 @@ class DirtGenerator extends TileGenerator
 
     COLOR\pop!
 
+
+class WetDirtGenerator extends DirtGenerator
+  colors: =>
+    C.dirt_dark, C.dirt_darker
+
+class TilledDirtGenerator extends TileGenerator
+  colors: =>
+    C.dirt, C.dirt_dark
+
+  render_tile: =>
+    @rng = love.math.newRandomGenerator @seed + 327
+    light, dark = @colors!
+    Box.draw @, light
+    print @rng\random!
+
+    g.push!
+    g.translate @w/2, @h/2
+    g.rotate @rng\random!
+    g.translate -@w/2, -@h/2
+
+    oy = @rng\random 1,4
+
+    for y=0,2
+      Box(0,oy + y * 4,16,2)\draw dark
+
+    g.pop!
+
+
+class WetTilledDirtGenerator extends TilledDirtGenerator
+  colors: =>
+    C.dirt_dark, C.dirt_darker
 
 class WoodGenerator extends TileGenerator
   render_tile: =>
@@ -112,9 +147,6 @@ class FloorGenerator extends TileGenerator
     COLOR\pop!
 
 
-class RoofGenerator extends TileGenerator
-
-
 class TopGenerator extends TileGenerator
   render_tile: =>
     @rng = love.math.newRandomGenerator @seed + 263
@@ -137,6 +169,9 @@ class TileSheet
       [WoodGenerator i for i=2,1+@w]
       [FloorGenerator i for i=2,1+@w]
       [TopGenerator i for i=2,1+@w]
+      [WetDirtGenerator i for i=2,1+@w]
+      [TilledDirtGenerator i for i=2,1+@w]
+      [WetTilledDirtGenerator i for i=2,1+@w]
     }
 
     @h = #rows
