@@ -18,6 +18,7 @@ export C = {
 
   dirt: {148,74,28}
   dirt_dark: {95, 57, 31}
+  dirt_darker: {50, 45, 35}
 
   wood: {148, 146, 76}
   wood_light: {220, 198, 124}

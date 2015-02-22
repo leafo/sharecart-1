@@ -1,7 +1,7 @@
 
 {graphics: g} = love
 
-import WaterEmitter from require "particles"
+import WaterEmitter, DirtEmitter from require "particles"
 
 class Object extends Entity
   color: C.stone
@@ -45,7 +45,9 @@ class Hoe extends Object
   name: "hoe"
 
   use: (player, world) =>
-    print "using watering hoe"
+    print "using hoe"
+    if tile = player\active_tile!
+      world.particles\add DirtEmitter tile, world
 
 { :Object, :WateringCan, :Hoe }
 
