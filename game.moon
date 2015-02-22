@@ -13,6 +13,20 @@ import
 import HList, VList from require "lovekit.ui"
 import LutShader from require "shaders"
 
+class Transport extends Box
+  solid: false
+  is_transport: true
+
+  new: (@target, ...) =>
+    super ...
+
+  draw: =>
+    g.rectangle "line", @unpack!
+
+  update: (dt) =>
+    true
+
+
 class Game
   new: =>
     @viewport = EffectViewport scale: GAME_CONFIG.scale
@@ -33,6 +47,9 @@ class Game
           when "start"
             @player.x = o.x
             @player.y = o.y
+          when "transport"
+            map = assert o.properties.map, "transport has no map"
+            @entities\add Transport map, o.x, o.y, o.width, o.height
 
       tile: (t) ->
         p = math.abs map_rng\randomNormal!
@@ -87,14 +104,21 @@ class Game
     @viewport\update dt
 
     @entity_grid\clear!
+
     for e in *@entities
       continue unless e.w -- is a box
       continue if e.held_by
       @entity_grid\add e
 
+    for other in *@entity_grid\get_touching @player
+      if other.is_transport
+        print "transport", other.target
+
+
   collides: (thing) =>
     for other in *@entity_grid\get_touching thing
-      return true
+      if other.solid
+        return true
 
     if @map\collides thing
       return true

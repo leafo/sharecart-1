@@ -7,7 +7,7 @@ return {
   height = 20,
   tilewidth = 16,
   tileheight = 16,
-  nextobjectid = 3,
+  nextobjectid = 4,
   properties = {},
   tilesets = {
     {
@@ -154,6 +154,21 @@ return {
           rotation = 0,
           visible = true,
           properties = {}
+        },
+        {
+          id = 3,
+          name = "transport",
+          type = "",
+          shape = "rectangle",
+          x = 61.6534,
+          y = 75.6042,
+          width = 36.902,
+          height = 24.3013,
+          rotation = 0,
+          visible = true,
+          properties = {
+            ["map"] = "maps.home"
+          }
         }
       }
     }

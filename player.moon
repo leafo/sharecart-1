@@ -2,6 +2,7 @@ class Player extends Entity
   color: {255, 255, 255}
   is_player: true
   speed: 120
+  solid: true
 
   w: 24
   h: 16
