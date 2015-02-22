@@ -23,7 +23,7 @@ class Player extends Entity
 
   new: (@x=0, @y=0) =>
     with @sprite
-      @anim = StateAnim "walk_right", {
+      @anim = StateAnim "stand_down", {
         walk_up: \seq {
           5, 8, 11, 2
         }, 0.15

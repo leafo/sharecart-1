@@ -9,6 +9,8 @@ import
   TileSheet
   from require "tiles"
 
+import Hud from require "hud"
+
 objects = require "object"
 
 class Transport extends Box
@@ -84,10 +86,13 @@ class World
 
     @viewport\pop!
 
+    @game.hud\draw!
+
   update: (dt) =>
     @entities\update dt, @
     @particles\update dt, @
     @map\update dt
+    @game.hud\update dt
 
     if @player
       @viewport\center_on @player, @map\to_box!, dt
@@ -121,6 +126,7 @@ class World
 
 class Game
   new: =>
+    @hud = Hud @
     @worlds_by_name = {
       farm: World @, "maps.map"
       home: World @, "maps.home"
