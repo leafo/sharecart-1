@@ -9,13 +9,42 @@ class Player extends Entity
   speed: 120
   solid: true
 
-  w: 24
-  h: 16
+  lazy sprite: => Spriter "images/player.png", 24, 32
 
-  feet_offset_x: 12
-  feet_offset_y: 8
+
+  w: 18
+  h: 10
+
+  feet_offset_x: 8
+  feet_offset_y: 6
+
+  ox: -3
+  oy: -23
 
   new: (@x=0, @y=0) =>
+    with @sprite
+      @anim = StateAnim "walk_right", {
+        walk_up: \seq {
+          5, 8, 11, 2
+        }, 0.15
+
+        walk_down: \seq {
+          3, 6, 9, 0
+        }, 0.15
+
+        walk_left: \seq {
+          4, 7, 10, 1
+        }, 0.15
+
+        walk_right: \seq {
+          4, 7, 10, 1
+        }, 0.15, true
+
+        stand_up: \seq { 2 }
+        stand_down: \seq { 0 }
+        stand_left: \seq { 1 }
+        stand_right: \seq { 1 }, nil, true
+      }
 
   looking_at: =>
     cx, cy = @center!
@@ -29,10 +58,19 @@ class Player extends Entity
 
   update: (dt, @world) =>
     dir = CONTROLLER\movement_vector! * dt * @speed
-    unless dir\is_zero!
+    if dir\is_zero!
+      @state = "stand"
+    else
+      @state = "walk"
       @primary_direction = dir\primary_direction!
 
     dx, dy = unpack dir
+
+    @anim\update dt
+
+    if @primary_direction
+      @facing = @primary_direction\direction_name!
+      @anim\set_state "#{@state}_#{@facing}"
 
     @fit_move dx, dy, @world
 
@@ -97,20 +135,12 @@ class Player extends Entity
     return false
 
   draw: =>
-    sprite = Box(0, 0, 24, 32)
-    sprite\set_pos @x, @y - 32 + @h
-    sprite\draw C.skin
+    @anim\draw @x + @ox, @y + @oy
 
-    super { 255,255,255, 50 }
-
-    fx, fy = @feet_pos!
-    box = Box(0, 0, 3, 3)\move_center fx, fy
-    box\draw C.grass
-
-    if @grab_box
-      COLOR\pusha 100
-      @grab_box\draw C.dirt
-      COLOR\pop!
+    -- if @grab_box
+    --   COLOR\pusha 100
+    --   @grab_box\draw C.dirt
+    --   COLOR\pop!
 
     if @holding
       @holding\draw!
