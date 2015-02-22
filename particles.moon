@@ -37,9 +37,11 @@ class WaterEmitter extends Emitter
     WaterParticle x, y - @box.h
 
   draw: (...) =>
+    COLOR\push C.water
     g.rectangle "line", @box\unpack!
-
+    COLOR\pop!
     super ...
+
 
 
 { :WaterEmitter }

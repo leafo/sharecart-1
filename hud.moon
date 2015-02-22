@@ -30,7 +30,7 @@ class Hud
   max_time: 60*23
 
   new: (@game) =>
-    @time = 0
+    @time = 60*8 -- 8am
     @day = 0
 
     @viewport = Viewport scale: GAME_CONFIG.scale
@@ -38,9 +38,12 @@ class Hud
     @clock = Label @\format_time
     @date = Label @\format_date
 
+    @holding = Label @\format_item
+
     @group = Group {
       Bin 0,0, @viewport.w, @viewport.h, @clock, 1, 1
       Bin 0,0, @viewport.w, @viewport.h, @date, 0, 1
+      Bin 0,0, @viewport.w, @viewport.h, @holding, 1, 0
     }
 
   format_date: =>
@@ -49,6 +52,12 @@ class Hud
 
     "#{month} #{day}#{ordinal day}"
 
+
+  format_item: =>
+    return "" unless @game.player
+    item = @game.player.holding
+    return "" unless item
+    "holding: #{item.name}"
 
   hours_minutes: =>
     t = math.floor @time
@@ -98,6 +107,7 @@ class Hud
     COLOR\push 0,0,0, 150
     Box.draw @date
     Box.draw @clock
+    Box.draw @holding
     COLOR\pop!
 
     @group\draw!

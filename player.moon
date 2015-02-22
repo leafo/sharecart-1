@@ -101,7 +101,9 @@ class Player extends Entity
     @move_center x,y
 
   head_pos: =>
-    @x + @w / 2, @y - 10
+    cx, cy = @center!
+    cy -= 25
+    cx, cy
 
   try_pickup: =>
     return if @holding
@@ -127,6 +129,8 @@ class Player extends Entity
       touches = @world\collides @holding
 
       unless touches
+        -- move it one more to avoid collision
+        @holding\move unpack @primary_direction
         @holding\drop @, @world
         return true
 
@@ -148,16 +152,9 @@ class Player extends Entity
     if @holding
       @holding\draw!
 
-  find_tiles: =>
+  active_tile: =>
     return unless @world
-    fx, fy = @feet_pos!
-    cell_size = @world.map.cell_size
-
-    tx = math.floor(fx / cell_size)
-    ty = math.floor(fx / cell_size)
-
-    ti = @world.map\to_i tx, ty
-    @world.map\default_layer![ti]
+    @world.active_tile
 
   __tostring: => "<Player>"
 

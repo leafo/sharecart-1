@@ -22,7 +22,6 @@ class Object extends Entity
     @held_by = thing
     thing.holding = @
 
-
   drop: (thing, world) =>
     @held_by = nil
     thing.holding = nil
@@ -35,12 +34,16 @@ class Object extends Entity
     g.print @@__name\lower!, @x, @y
 
 class WateringCan extends Object
+  name: "watering can"
+
   use: (player, world) =>
     print "using watering can"
-    tile = player\find_tiles!
-    world.particles\add WaterEmitter tile, world
+    if tile = player\active_tile!
+      world.particles\add WaterEmitter tile, world
 
 class Hoe extends Object
+  name: "hoe"
+
   use: (player, world) =>
     print "using watering hoe"
 
