@@ -40,6 +40,9 @@ class WateringCan extends Object
     print "using watering can"
     if tile = player\active_tile!
       world.particles\add WaterEmitter tile, world
+      tile_state = world.ground_tiles[tile]
+      return unless tile_state
+      tile_state.wet = true
 
 class Hoe extends Object
   name: "hoe"
@@ -48,6 +51,9 @@ class Hoe extends Object
     print "using hoe"
     if tile = player\active_tile!
       world.particles\add DirtEmitter tile, world
+      tile_state = world.ground_tiles[tile]
+      return unless tile_state
+      tile_state.tilled = true
 
 { :Object, :WateringCan, :Hoe }
 

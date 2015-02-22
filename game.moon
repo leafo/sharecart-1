@@ -88,9 +88,12 @@ class World
 
   draw_inside: =>
     @map\draw @viewport, 1, 1
+    @draw_inside_below!
     @entities\draw_sorted!
     @particles\draw!
     @map\draw @viewport, 2, 2
+
+  draw_inside_below: =>
 
   update: (dt) =>
     @entities\update dt, @
@@ -133,10 +136,27 @@ class OutsideWorld extends World
     super ...
     @night = imgfy "images/night.png"
 
+    @ground_tiles = {}
     @ground_grid = UniformGrid 32
     for _, t in pairs @map\default_layer!
       if t.dirt
+        @ground_tiles[t] = {}
         @ground_grid\add t
+
+
+  draw_inside_below: =>
+    for t, v in pairs @ground_tiles
+      c = if v.wet and not v.tilled
+        C.water
+      elseif v.tilled and not v.wet
+        C.dirt_darker
+      elseif v.tilled and v.wet
+        C.stone
+
+      if c
+        COLOR\push c
+        g.rectangle "fill", t\unpack!
+        COLOR\pop!
 
   draw_inside: =>
     super!
