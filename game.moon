@@ -21,7 +21,7 @@ class Transport extends Box
     super ...
 
   draw: =>
-    g.rectangle "line", @unpack!
+    -- g.rectangle "line", @unpack!
 
   update: (dt) =>
     true
@@ -39,7 +39,6 @@ class World
     @entity_grid = UniformGrid!
     @sheet = TileSheet!
     @spawns = {}
-    @night = imgfy "images/night.png"
 
     map_rng = love.math.newRandomGenerator 666
     @map = GameMap\from_tiled @map_name, {
@@ -79,28 +78,15 @@ class World
 
   draw: =>
     @viewport\apply!
+    @draw_inside!
+    @viewport\pop!
+    @game.hud\draw!
 
+  draw_inside: =>
     @map\draw @viewport, 1, 1
     @entities\draw_sorted!
     @particles\draw!
     @map\draw @viewport, 2, 2
-
-    cx, cy = @player\center!
-
-    nx = cx - @night\width! / 2
-    ny = cy - @night\height! / 2
-
-    nx = math.min @viewport.x, nx
-    ny = math.min @viewport.y, ny
-
-    nx = math.max nx, @viewport.w - @night\width!
-    ny = math.max ny, @viewport.h - @night\height!
-
-    @night\draw nx, ny
-
-    @viewport\pop!
-
-    @game.hud\draw!
 
   update: (dt) =>
     @entities\update dt, @
@@ -138,11 +124,33 @@ class World
   remove: (...) => @entities\remove ...
   add: (...) => @entities\add ...
 
+class OutsideWorld extends World
+  new: (...) =>
+    super ...
+    @night = imgfy "images/night.png"
+
+  draw_inside: =>
+    super!
+
+    if @player
+      cx, cy = @player\center!
+
+      nx = cx - @night\width! / 2
+      ny = cy - @night\height! / 2
+
+      nx = math.min @viewport.x, nx
+      ny = math.min @viewport.y, ny
+
+      nx = math.max nx, @viewport.w - @night\width!
+      ny = math.max ny, @viewport.h - @night\height!
+
+      @night\draw nx, ny
+
 class Game
   new: =>
     @hud = Hud @
     @worlds_by_name = {
-      farm: World @, "maps.map"
+      farm: OutsideWorld @, "maps.map"
       home: World @, "maps.home"
     }
 
@@ -154,6 +162,7 @@ class Game
 
     if @current_world
       @current_world\remove_player @player
+      @current_world.player = nil
 
     @current_world = world
     world\add_player @player
