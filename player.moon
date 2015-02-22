@@ -10,7 +10,17 @@ class Player extends Entity
   feet_offset_x: 12
   feet_offset_y: 8
 
-  new: (@x, @y) =>
+  new: (@x=0, @y=0) =>
+
+  looking_at: =>
+    cx, cy = @center!
+
+    if @primary_direction
+      cx += @primary_direction[1] * 10
+      cy += @primary_direction[2] * 10
+
+
+    cx, cy
 
   update: (dt, @world) =>
     dir = CONTROLLER\movement_vector! * dt * @speed

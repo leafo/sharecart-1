@@ -26,27 +26,28 @@ class Transport extends Box
   update: (dt) =>
     true
 
-
-class Game
-  new: =>
+class World
+  new: (map_name) =>
     @viewport = EffectViewport scale: GAME_CONFIG.scale
-    @entities = EntityList!
+    @entities = DrawList!
 
-    @player = Player 0,0
-    @entities\add @player
     @entities\add Object 130, 130, 20, 16
 
     @entity_grid = UniformGrid!
 
     @sheet = TileSheet!
 
+    @spawns = {}
+
     map_rng = love.math.newRandomGenerator 666
     @map = TileMap\from_tiled "maps.map", {
       object: (o) ->
         switch o.name
           when "start"
-            @player.x = o.x
-            @player.y = o.y
+            @spawns[o.properties.source or "default"] = {
+              o.x
+              o.y
+            }
           when "transport"
             map = assert o.properties.map, "transport has no map"
             @entities\add Transport map, o.x, o.y, o.width, o.height
@@ -67,24 +68,25 @@ class Game
     lut = imgfy "images/lut-restricted.png"
     @lut = LutShader lut.tex
 
+  add_player: (player, source="default") =>
+    sx, sy = unpack @spawns[source]
+    assert sx, "missing spawn"
+    @player = player
+    @player.x = sx
+    @player.y = sy
+    @entities\add player
+
+  remove_player: =>
+    @entities\remove @player
+
   draw: =>
     g.setCanvas @screen_canvas
     @screen_canvas\clear 10, 10, 10
 
     @viewport\apply!
-    @viewport\center_on @player
 
     @map\draw @viewport, 1, 1
-
-    -- g.print "hello world", 10, 10
-
     @entities\draw!
-
-    -- g.push!
-    -- g.translate 20, 20
-    -- g.draw @sheet.canvas, -80, -80
-    -- g.pop!
-
     @map\draw @viewport, 2, 2
 
     @viewport\pop!
@@ -101,6 +103,10 @@ class Game
   update: (dt) =>
     @entities\update dt, @
     @map\update dt
+
+    if @player
+      @viewport\center_on @player, nil, dt
+
     @viewport\update dt
 
     @entity_grid\clear!
@@ -110,10 +116,10 @@ class Game
       continue if e.held_by
       @entity_grid\add e
 
-    for other in *@entity_grid\get_touching @player
-      if other.is_transport
-        print "transport", other.target
-
+    if @player
+      for other in *@entity_grid\get_touching @player
+        if other.is_transport
+          print "transport", other.target
 
   collides: (thing) =>
     for other in *@entity_grid\get_touching thing
@@ -125,5 +131,30 @@ class Game
 
     false
 
-{ :Game }
+class Game
+  new: =>
+    @worlds_by_name = {
+      farm: World "maps.map"
+      home: World "maps.home"
+    }
+
+    @player = Player 0,0
+
+  goto_world: (name) =>
+    world = assert @worlds_by_name[name],
+      "invalid world"
+
+    if @current_world
+      @current_world\remove_player @player
+
+    world\add_player @player
+    DISPATCHER\push world
+
+  update: (dt) =>
+    @goto_world "farm"
+    true
+
+  draw: =>
+
+{ :Game, :World }
 
