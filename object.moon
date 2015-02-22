@@ -1,4 +1,6 @@
 
+{graphics: g} = love
+
 class Object extends Entity
   color: C.stone
   solid: true
@@ -18,5 +20,17 @@ class Object extends Entity
 
   __tostring: => "<Object #{Box.__tostring @}>"
 
-{ :Object }
+  draw: =>
+    super!
+    g.print @@__name\lower!, @x, @y
+
+class WateringCan extends Object
+  use: (world) =>
+    print "using watering can"
+
+class Hoe extends Object
+  use: (world) =>
+    print "using watering hoe"
+
+{ :Object, :WateringCan, :Hoe }
 

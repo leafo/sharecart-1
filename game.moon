@@ -2,13 +2,14 @@
 {graphics: g} = love
 
 import Player from require "player"
-import Object from require "object"
 import
   GrassGenerator
   DirtGenerator
   WoodGenerator
   TileSheet
   from require "tiles"
+
+objects = require "object"
 
 class Transport extends Box
   solid: false
@@ -24,27 +25,29 @@ class Transport extends Box
     true
 
 class World
-  new: (@game, map_name) =>
+  new: (@game, @map_name) =>
     @viewport = EffectViewport scale: GAME_CONFIG.scale
     @entities = DrawList!
 
-    -- @entities\add Object 130, 130, 20, 16
     @entity_grid = UniformGrid!
     @sheet = TileSheet!
     @spawns = {}
 
     map_rng = love.math.newRandomGenerator 666
-    @map = TileMap\from_tiled map_name, {
+    @map = TileMap\from_tiled @map_name, {
       object: (o) ->
+        obox = Box o.x, o.y, o.width, o.height
+
         switch o.name
           when "start"
-            @spawns[o.properties.source or "default"] = {
-              o.x
-              o.y
-            }
+            @spawns[o.properties.source or "default"] = { obox\center! }
           when "transport"
             world_name = assert o.properties.world, "transport has no world"
             @entities\add Transport world_name, o.x, o.y, o.width, o.height
+          when "object"
+            obj = assert objects[o.properties.type],
+              "failed to find object #{o.properties.type}"
+            @entities\add obj obox\center!
 
       tile: (t) ->
         p = math.abs map_rng\randomNormal!
@@ -60,8 +63,7 @@ class World
     sx, sy = unpack @spawns[source]
     assert sx, "missing spawn"
     @player = player
-    @player.x = sx
-    @player.y = sy
+    @player\move_feet sx, sy
     @entities\add player
 
   remove_player: =>
@@ -123,6 +125,7 @@ class Game
     if @current_world
       @current_world\remove_player @player
 
+    @current_world = world
     world\add_player @player
     DISPATCHER\replace world
 

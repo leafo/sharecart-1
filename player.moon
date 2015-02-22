@@ -1,3 +1,5 @@
+
+-- holding: object being held
 class Player extends Entity
   color: {255, 255, 255}
   is_player: true
@@ -28,6 +30,7 @@ class Player extends Entity
       @primary_direction = dir\primary_direction!
 
     dx, dy = unpack dir
+
     @fit_move dx, dy, @world
 
     if @primary_direction
@@ -35,7 +38,7 @@ class Player extends Entity
       offset = Vec2d(@feet_pos!) + @primary_direction * 10
       @grab_box\move_center unpack offset
 
-    if CONTROLLER\downed "confirm"
+    if CONTROLLER\downed "pickup"
       unless @try_pickup!
         @try_drop!
 
@@ -43,6 +46,10 @@ class Player extends Entity
 
   feet_pos: =>
     @x + @feet_offset_x, @y + @feet_offset_y
+
+  move_feet: (x,y) =>
+    @x = x - @feet_offset_x
+    @y = y - @feet_offset_y
 
   head_pos: =>
     @x + @w / 2, @y - 10

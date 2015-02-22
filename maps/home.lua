@@ -7,7 +7,7 @@ return {
   height = 12,
   tilewidth = 16,
   tileheight = 16,
-  nextobjectid = 4,
+  nextobjectid = 5,
   properties = {},
   tilesets = {
     {
@@ -123,8 +123,8 @@ return {
           name = "start",
           type = "",
           shape = "rectangle",
-          x = 112,
-          y = 87,
+          x = 143.805,
+          y = 151.359,
           width = 0,
           height = 0,
           rotation = 0,

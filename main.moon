@@ -6,7 +6,6 @@ require "lovekit.all"
 
 sharecart = require "sharecart"
 
-
 export DEBUG = false
 
 export C = {
@@ -79,5 +78,4 @@ love.load = ->
 
   export CONTROLLER = Controller GAME_CONFIG.keys, "auto"
   export DISPATCHER = State Game!
-  DISPATCHER.default_transition = FadeTransition
   DISPATCHER\bind love

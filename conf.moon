@@ -5,8 +5,8 @@ export GAME_CONFIG = {
     confirm: { "x", " ", joystick: 1}
     cancel: { "c", joystick: 2 }
 
-    shoot: { "x", " ", joystick: 2 }
-    upgrade: { "c", "return", joystick: 1 }
+    pickup: { "x", " ", joystick: 1 }
+    use: { "c", "return", joystick: 2 }
 
     up: "up"
     down: "down"

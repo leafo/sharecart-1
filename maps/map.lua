@@ -7,7 +7,7 @@ return {
   height = 20,
   tilewidth = 16,
   tileheight = 16,
-  nextobjectid = 4,
+  nextobjectid = 6,
   properties = {},
   tilesets = {
     {
@@ -168,6 +168,36 @@ return {
           visible = true,
           properties = {
             ["world"] = "home"
+          }
+        },
+        {
+          id = 4,
+          name = "object",
+          type = "",
+          shape = "rectangle",
+          x = 184.51,
+          y = 67.5037,
+          width = 0,
+          height = 0,
+          rotation = 0,
+          visible = true,
+          properties = {
+            ["type"] = "WateringCan"
+          }
+        },
+        {
+          id = 5,
+          name = "object",
+          type = "",
+          shape = "rectangle",
+          x = 239.863,
+          y = 68.8538,
+          width = 0,
+          height = 0,
+          rotation = 0,
+          visible = true,
+          properties = {
+            ["type"] = "Hoe"
           }
         }
       }
