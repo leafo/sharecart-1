@@ -11,13 +11,13 @@ class WaterParticle extends PixelParticle
     @size = pick_one 2,3,4,5
 
     @vel = Vec2d 0, 20
-    @accel = Vec2d 0, 40
+    @accel = Vec2d 0, 50
 
   draw: =>
     g.push!
 
     g.translate @x, @y
-    s = @fade_in!
+    s = pop_in @p!, 0.1, 2
     g.scale s, s
     g.translate -@x, -@y
 
@@ -40,7 +40,6 @@ class WaterEmitter extends Emitter
     g.rectangle "line", @box\unpack!
 
     super ...
-
 
 
 { :WaterEmitter }
