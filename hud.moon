@@ -30,28 +30,76 @@ class Hud
   max_time: 60*23
 
   new: (@game) =>
-    @time = 60*8 -- 8am
+    @setup_time!
+    @setup_name!
+    @setup_age!
+
     @day = 0
 
     @viewport = Viewport scale: GAME_CONFIG.scale
 
     @clock = Label @\format_time
     @date = Label @\format_date
-
     @holding = Label @\format_item
+    @name = Label @\format_name
 
     @group = Group {
       Bin 0,0, @viewport.w, @viewport.h, @clock, 1, 1
       Bin 0,0, @viewport.w, @viewport.h, @date, 0, 1
       Bin 0,0, @viewport.w, @viewport.h, @holding, 1, 0
+      Bin 0,0, @viewport.w, @viewport.h, @name, 0, 0
     }
+
+
+    @seq = Sequence ->
+      wait 5
+      SHARECART.Misc3 = @day % 60000
+      SHARECART.MapX = @time % 1000
+      SHARECART.MapY = @_age % 1000
+
+      again!
+
+
+  setup_day: =>
+    day = SHARECART.Misc3
+    unless day
+      day = love.math.random 0, 1023
+      SHARECART.Misc3 = day
+
+    @day = day
+
+  setup_time: =>
+    time = SHARECART.MapX
+    unless time
+      time = love.math.random 0, 1023
+      SHARECART.MapX = time
+
+    @time = time % @max_time
+
+  setup_name: =>
+    name = SHARECART.PlayerName
+    unless name
+      name = "Farmer"
+      SHARECART.PlayerName = name
+
+    @_name = name
+
+  setup_age: =>
+    age = SHARECART.MapY
+    unless age
+      age = love.math.random 18, 36
+      SHARECART.MapY = age
+
+    @_age = age
+
+  format_name: =>
+    "#{@_name\lower!} - age: #{@_age}"
 
   format_date: =>
     month = @months[math.floor(@day / @days_per_month) % #@months + 1]
     day = (@day % @days_per_month) + 1
 
     "#{month} #{day}#{ordinal day}"
-
 
   format_item: =>
     return "" unless @game.player
@@ -100,6 +148,7 @@ class Hud
       @time -= @max_time
 
     @group\update dt
+    @seq\update dt
 
   draw: =>
     @viewport\apply!
@@ -108,6 +157,7 @@ class Hud
     Box.draw @date
     Box.draw @clock
     Box.draw @holding
+    Box.draw @name
     COLOR\pop!
 
     @group\draw!

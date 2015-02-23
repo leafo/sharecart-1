@@ -74,8 +74,6 @@ love.load = ->
   export SHARECART = assert sharecart.love_load(love, args),
     "could not find valid save"
 
-  -- SHARECART.PlayerName = "leafo buttthrob"
-
   g.setFont fonts.default
   g.setBackgroundColor 10, 10, 10
 
