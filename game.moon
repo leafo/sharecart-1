@@ -138,11 +138,39 @@ class OutsideWorld extends World
 
     @ground_tiles = {}
     @ground_grid = UniformGrid 32
-    for _, t in pairs @map\default_layer!
+    @all_tiles = for _, t in pairs @map\default_layer!
       if t.dirt
         @ground_tiles[t] = {}
         @ground_grid\add t
+        t
+      else
+        continue
 
+    @read_from_cart @all_tiles
+
+  mousepressed: =>
+    print @save_to_cart @all_tiles
+
+  read_from_cart: (tiles, key="Misc0") =>
+    stride = 4
+    num = SHARECART[key] or 0
+    print "Reading tiles from", num
+
+    for t in *tiles
+      k = num % stride
+      num = math.floor num / 2
+      @ground_tiles[t] = switch num
+        when 0
+          {}
+        when 1
+          {wet: true}
+        when 2
+          {tilled: true}
+        when 3
+          {wet: true, tilled: true}
+
+  save_to_cart: (tiles, key="Misc0") =>
+    -- TODO
 
   draw_inside_below: =>
     for t, v in pairs @ground_tiles

@@ -32,6 +32,7 @@ class TileGenerator extends Box
 class GrassGenerator extends TileGenerator
   render_tile: =>
     @rng = love.math.newRandomGenerator @seed + 777
+    @rng\random! for i=1,3
     Box.draw @, C.grass
 
     for color in *{C.grass_dark, C.grass_light}
@@ -49,6 +50,7 @@ class DirtGenerator extends TileGenerator
 
   render_tile: =>
     @rng = love.math.newRandomGenerator @seed
+    @rng\random! for i=1,3
     light, dark = @colors!
     Box.draw @, light
 
@@ -88,7 +90,7 @@ class TilledDirtGenerator extends TileGenerator
     @rng = love.math.newRandomGenerator @seed + 327
     light, dark = @colors!
     Box.draw @, light
-    print @rng\random!
+    @rng\random! for i=1,3
 
     g.push!
     g.translate @w/2, @h/2
@@ -110,6 +112,7 @@ class WetTilledDirtGenerator extends TilledDirtGenerator
 class WoodGenerator extends TileGenerator
   render_tile: =>
     @rng = love.math.newRandomGenerator @seed
+    @rng\random! for i=1,3
     Box.draw @, C.wood
 
     for color in *{C.wood_dark, C.wood_light}
@@ -120,6 +123,7 @@ class WoodGenerator extends TileGenerator
 class FloorGenerator extends TileGenerator
   render_tile: =>
     @rng = love.math.newRandomGenerator @seed
+    @rng\random! for i=1,3
     Box.draw @, C.floor
 
     g.setPointSize 2

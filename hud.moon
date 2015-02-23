@@ -33,8 +33,7 @@ class Hud
     @setup_time!
     @setup_name!
     @setup_age!
-
-    @day = 0
+    @setup_day!
 
     @viewport = Viewport scale: GAME_CONFIG.scale
 
@@ -50,12 +49,11 @@ class Hud
       Bin 0,0, @viewport.w, @viewport.h, @name, 0, 0
     }
 
-
     @seq = Sequence ->
-      wait 5
-      SHARECART.Misc3 = @day % 60000
-      SHARECART.MapX = @time % 1000
-      SHARECART.MapY = @_age % 1000
+      wait 2
+      SHARECART.Misc3 = math.floor @day % 60000
+      SHARECART.MapX = math.floor @time % 1000
+      SHARECART.MapY = math.floor @_age % 1000
 
       again!
 
