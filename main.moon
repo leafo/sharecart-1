@@ -71,8 +71,11 @@ love.load = (args) ->
       [[ abcdefghijklmnopqrstuvwxyz-1234567890!.,:;'"?$&]]
   }
 
-  export SHARECART = assert sharecart.love_load(love, args),
-    "could not find valid save"
+
+  export SHARECART = {}
+  pcall ->
+    export SHARECART = assert sharecart.love_load(love, args),
+      "could not find valid save"
 
   g.setFont fonts.default
   g.setBackgroundColor 10, 10, 10
