@@ -8,6 +8,8 @@ export GAME_CONFIG = {
     pickup: { "x", " ", joystick: 1 }
     use: { "c", "return", joystick: 2 }
 
+    save: { "s", joystick: 3 }
+
     up: "up"
     down: "down"
     left: "left"

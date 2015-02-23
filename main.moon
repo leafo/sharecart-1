@@ -1,5 +1,5 @@
 
-require "lovekit.reloader"
+-- require "lovekit.reloader"
 require "lovekit.all"
 
 {graphics: g} = love

@@ -13,6 +13,8 @@ import Hud from require "hud"
 
 objects = require "object"
 
+import rshift, lshift, band, bxor from require "bit"
+
 class Dirt extends Tile
   dirt: true
 
@@ -148,8 +150,12 @@ class OutsideWorld extends World
 
     @read_from_cart @all_tiles
 
-  mousepressed: =>
-    print @save_to_cart @all_tiles
+
+    @seq = Sequence ->
+      wait 2
+      @save_to_cart @all_tiles
+      again!
+
 
   read_from_cart: (tiles, key="Misc0") =>
     stride = 4
@@ -169,8 +175,32 @@ class OutsideWorld extends World
         when 3
           {wet: true, tilled: true}
 
+  update: (dt) =>
+    super dt
+    @seq\update dt
+
+    if CONTROLLER\downed "save"
+      @save_to_cart @all_tiles
+
   save_to_cart: (tiles, key="Misc0") =>
-    -- TODO
+    number = 0
+    for i, t in ipairs tiles
+      state = @ground_tiles[t]
+      if state.wet
+        bit = i % 16
+        number = bxor number, lshift 1, bit
+
+    SHARECART.Misc0 = number
+
+    number = 0
+    for i, t in ipairs tiles
+      state = @ground_tiles[t]
+      if state.tilled
+        bit = i % 16
+        number = bxor number, lshift 1, bit
+
+    SHARECART.Misc1 = number
+    print "Saved:", "Misc0", SHARECART.Misc0, "Misc1", SHARECART.Misc1
 
   draw_inside_below: =>
     for t, v in pairs @ground_tiles
