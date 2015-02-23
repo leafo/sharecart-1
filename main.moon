@@ -65,7 +65,7 @@ load_font = (img, chars) ->
   font_image = imgfy img
   g.newImageFont font_image.tex, chars
 
-love.load = ->
+love.load = (args) ->
   fonts = {
     default: load_font "images/font.png",
       [[ abcdefghijklmnopqrstuvwxyz-1234567890!.,:;'"?$&]]
