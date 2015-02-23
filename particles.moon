@@ -60,7 +60,7 @@ class WaterEmitter extends Emitter
 
   draw: (...) =>
     COLOR\push C.water
-    g.rectangle "line", @box\unpack!
+    -- g.rectangle "line", @box\unpack!
     COLOR\pop!
     super ...
 
@@ -77,7 +77,7 @@ class DirtEmitter extends Emitter
 
   draw: (...) =>
     COLOR\push C.dirt_darker
-    g.rectangle "line", @box\unpack!
+    -- g.rectangle "line", @box\unpack!
     COLOR\pop!
     super ...
 

@@ -4,6 +4,11 @@
 import WaterEmitter, DirtEmitter from require "particles"
 
 class Object extends Entity
+  lazy sprite: => Spriter "images/tile.png", 16, 16
+
+  w: 16
+  h: 16
+
   color: C.stone
   solid: true
   held_by: nil
@@ -30,8 +35,7 @@ class Object extends Entity
   __tostring: => "<Object #{Box.__tostring @}>"
 
   draw: =>
-    super!
-    g.print @@__name\lower!, @x, @y
+    @sprite\draw "48,16,16,16", @x, @y
 
 class WateringCan extends Object
   name: "watering can"
@@ -44,6 +48,9 @@ class WateringCan extends Object
       return unless tile_state
       tile_state.wet = true
 
+  draw: =>
+    @sprite\draw "48,16,16,16", @x, @y
+
 class Hoe extends Object
   name: "hoe"
 
@@ -54,6 +61,9 @@ class Hoe extends Object
       tile_state = world.ground_tiles[tile]
       return unless tile_state
       tile_state.tilled = true
+
+  draw: =>
+    @sprite\draw "64,16,16,16", @x, @y
 
 { :Object, :WateringCan, :Hoe }
 
